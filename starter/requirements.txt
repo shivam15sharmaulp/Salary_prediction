@@ -35,6 +35,9 @@ altair==4.1.0
 # Flask and extensions (for aequitas)
 Flask==0.12.2
 Flask-Bootstrap==3.3.7.1
+Jinja2==3.0.3
+Werkzeug==0.16.1
+itsdangerous==1.1.0
 
 # Other utilities
 python-multipart==0.0.20

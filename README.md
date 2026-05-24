@@ -49,3 +49,89 @@ Working in a command line environment is recommended for ease of use with git an
     * Hint: development in Python is fast! But how fast you can iterate slows down if you rely on your CI/CD to fail before fixing an issue. I like to run flake8 locally before I commit changes.
     * Note: Install flake8 separately if needed: `pip install flake8`
 * Write a script that uses the requests module to do one POST on your live API.
+
+# Model Card
+
+## Model Details
+
+This project uses a supervised binary classification model to predict whether a person's income is `<=50K` or `>50K` from census-style demographic and employment features. The model was created by Shivam Sharma for the Udacity ML DevOps Engineer Nanodegree final project.
+
+- Model type: `RandomForestClassifier`
+- Library: scikit-learn
+- Number of trees: `100`
+- Random seed: `42`
+- Parallelism: `n_jobs=-1`
+- Cross-validation: `StratifiedKFold(n_splits=5, shuffle=True, random_state=42)`
+- Training script: `starter/starter/train_model.py`
+- Supporting preprocessing: `starter/starter/ml/data.py`
+
+The preprocessing pipeline strips whitespace from CSV column names, one-hot encodes categorical features with `OneHotEncoder(handle_unknown="ignore")`, and binarizes the `salary` target with `LabelBinarizer`.
+
+Reference: https://arxiv.org/pdf/1810.03993.pdf
+
+## Intended Use
+
+This model is intended for educational use as part of an end-to-end MLOps workflow covering training, evaluation, slice-based performance analysis, CI, and deployment. Intended users are Udacity reviewers, students, and developers evaluating the project pipeline.
+
+This model is not intended for production decision-making in hiring, compensation, lending, insurance, immigration, or any other high-stakes domain.
+
+## Data
+
+The model is trained on the census income dataset stored in `starter/data/census.csv`. The label is `salary`, which is converted into a binary outcome representing income `<=50K` or `>50K`.
+
+Training and evaluation use an 80/20 train-test split from the same dataset. The pipeline uses the following categorical features for one-hot encoding:
+
+- `workclass`
+- `education`
+- `marital-status`
+- `occupation`
+- `relationship`
+- `race`
+- `sex`
+- `native-country`
+
+Continuous features such as age, fnlgt, education-num, capital-gain, capital-loss, and hours-per-week are passed through without scaling.
+
+## Metrics
+
+### Overall Performance
+
+| Metric | Value |
+| --- | ---: |
+| Mean CV F1 | 0.6649 |
+| CV F1 standard deviation | 0.0057 |
+| Test precision | 0.7391 |
+| Test recall | 0.6384 |
+| Test F1 | 0.6851 |
+
+![Overall model performance](starter/screenshots/overall_metrics.png)
+
+### Key Slice Performance
+
+The project computes slice metrics across categorical feature values. Selected examples are shown below.
+
+| Feature | Slice | Precision | Recall | F1 |
+| --- | --- | ---: | ---: | ---: |
+| sex | Female | 0.726 | 0.511 | 0.599 |
+| sex | Male | 0.741 | 0.661 | 0.699 |
+| race | White | 0.737 | 0.637 | 0.683 |
+| race | Black | 0.741 | 0.615 | 0.672 |
+| race | Asian-Pac-Islander | 0.786 | 0.710 | 0.746 |
+| education | HS-grad | 0.646 | 0.423 | 0.511 |
+| education | Bachelors | 0.757 | 0.733 | 0.745 |
+| education | Masters | 0.826 | 0.850 | 0.838 |
+
+![Selected slice F1 scores](starter/screenshots/slice_metrics.png)
+
+## Bias and Fairness Considerations
+
+The model uses sensitive or demographic-adjacent attributes such as `sex`, `race`, `relationship`, and `native-country`. These features can encode or proxy protected characteristics and structural inequities present in the source data.
+
+The slice metrics show uneven performance across groups. For example, the F1 score for `sex=Female` is lower than for `sex=Male`, and some small subgroups show unstable or extreme metric values because they contain very few examples. Those differences indicate that the model can reflect data imbalance and historical bias rather than neutral income prediction.
+
+## Caveats
+
+- The test set is drawn from the same source dataset as the training set, so this is not an external validation.
+- Slice metrics for rare categories are noisy and can look artificially perfect or artificially poor because the support is very small.
+- The model is appropriate for coursework and demonstration, not for real-world policy or business decisions.
+- If the dataset, preprocessing, or model parameters change, the reported metrics and plots should be regenerated.

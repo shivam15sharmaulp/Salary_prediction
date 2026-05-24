@@ -1,6 +1,6 @@
 # Script to train machine learning model.
 
-from starter.ml.model import (
+from starter.starter.ml.model import (
     train_model,
     inference,
     compute_model_metrics,
@@ -9,7 +9,7 @@ from starter.ml.model import (
 from sklearn.model_selection import train_test_split
 import pandas as pd
 from sklearn.ensemble import RandomForestClassifier
-from starter.ml.data import process_data
+from starter.starter.ml.data import process_data
 from sklearn.model_selection import StratifiedKFold, cross_val_score
 import joblib
 from pathlib import Path

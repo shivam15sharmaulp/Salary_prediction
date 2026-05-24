@@ -2,7 +2,7 @@ import numpy as np
 import pytest
 from sklearn.ensemble import RandomForestClassifier
 
-from starter.ml.model import train_model
+from starter.starter.ml.model import train_model
 
 
 @pytest.fixture

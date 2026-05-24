@@ -7,12 +7,13 @@ from fastapi import FastAPI
 from pydantic import BaseModel, ConfigDict, Field
 from sklearn.model_selection import train_test_split
 
-from starter.ml.data import process_data
-from starter.ml.model import inference
+from starter.starter.ml.data import process_data
+from starter.starter.ml.model import inference
 
 BASE_DIR = Path(__file__).resolve().parent
-DATA_PATH = BASE_DIR / "data" / "census.csv"
-MODEL_PATH = BASE_DIR / "model" / "model.joblib"
+APP_DIR = BASE_DIR / "starter"
+DATA_PATH = APP_DIR / "data" / "census.csv"
+MODEL_PATH = APP_DIR / "model" / "model.joblib"
 LABEL_COLUMN = "salary"
 CATEGORICAL_FEATURES = [
 	"workclass",

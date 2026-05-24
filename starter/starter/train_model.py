@@ -1,6 +1,11 @@
 # Script to train machine learning model.
 
-from starter.ml.model import train_model, inference, compute_model_metrics
+from starter.ml.model import (
+    train_model,
+    inference,
+    compute_model_metrics,
+    compute_slice_metrics,
+)
 from sklearn.model_selection import train_test_split
 import pandas as pd
 from sklearn.ensemble import RandomForestClassifier
@@ -17,6 +22,7 @@ MODEL_PATH = BASE_DIR / "model" / "model.joblib"
 
 # Add code to load in the data.
 data = pd.read_csv(DATA_PATH)
+data.columns = data.columns.str.strip()
 
 
 # Optional enhancement, use K-fold cross validation instead of a train-test split.
@@ -79,3 +85,12 @@ y_pred = inference(loaded_model, X_test)
 precision, recall, fbeta = compute_model_metrics(y_test, y_pred)
 
 print(f" Precision: {precision}, Recall: {recall}, fbeta: {fbeta}")
+
+slice_metrics = compute_slice_metrics(
+    model=loaded_model,
+    data=test,
+    categorical_features=cat_features,
+    label="salary",
+    encoder=encoder,
+    lb=lb,
+)

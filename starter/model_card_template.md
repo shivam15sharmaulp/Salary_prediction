@@ -51,6 +51,8 @@ Overall metrics:
 - Test recall: `0.6384`
 - Test F1: `0.6851`
 
+![Overall model performance](screenshots/overall_metrics.png)
+
 Selected slice metrics:
 
 | Feature | Slice | Precision | Recall | F1 |
@@ -63,6 +65,8 @@ Selected slice metrics:
 | education | HS-grad | 0.646 | 0.423 | 0.511 |
 | education | Bachelors | 0.757 | 0.733 | 0.745 |
 | education | Masters | 0.826 | 0.850 | 0.838 |
+
+![Selected slice performance](screenshots/slice_metrics.png)
 
 ## Ethical Considerations
 

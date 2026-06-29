@@ -1,6 +1,6 @@
 # Salary Prediction — Census Income API
 
-A production-ready ML pipeline that predicts whether a person earns **>50K** or **≤50K** per year from U.S. Census demographic features. The project covers the full MLOps lifecycle: data preprocessing, model training with cross-validation, slice-based fairness evaluation, a FastAPI inference service, and automated CI/CD via GitHub Actions with deployment to Heroku.
+A production-ready ML pipeline that predicts whether a person earns **>50K** or **≤50K** per year from U.S. Census demographic features. The project covers the full MLOps lifecycle: data preprocessing, model training with cross-validation, slice-based fairness evaluation, dataset and model artifact tracking with DVC backed by AWS S3, a FastAPI inference service, and automated CI/CD via GitHub Actions with deployment to Heroku.
 
 ---
 
@@ -10,6 +10,7 @@ A production-ready ML pipeline that predicts whether a person earns **>50K** or 
 |---|---|
 | Language | Python 3.13 |
 | ML | scikit-learn (`RandomForestClassifier`) |
+| Data & Artifact Tracking | DVC + AWS S3 |
 | API | FastAPI + Pydantic + Uvicorn |
 | Testing | pytest + httpx |
 | CI | GitHub Actions |
@@ -51,6 +52,9 @@ source .venv/bin/activate          # Windows: .venv\Scripts\activate
 # Install dependencies
 pip install -r requirements.txt
 
+# Pull the tracked dataset and model artifacts from DVC/S3
+dvc pull
+
 # Train the model (saves artifacts to starter/model/)
 python starter/starter/train_model.py
 
@@ -59,6 +63,26 @@ pytest starter/tests/
 
 # Start the API locally
 uvicorn main:app --reload
+```
+
+---
+
+## Data And Model Tracking
+
+This project uses `DVC` to version the dataset and saved model artifacts outside Git, with `AWS S3` configured as the remote storage backend. The tracked artifacts include the census dataset in `starter/data/` and the trained joblib files in `starter/model/`.
+
+Typical commands:
+
+```bash
+# Track updated data or model artifacts
+dvc add starter/data
+dvc add starter/model
+
+# Upload tracked artifacts to S3
+dvc push
+
+# Restore tracked artifacts from S3
+dvc pull
 ```
 
 ---
